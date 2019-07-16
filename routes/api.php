@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,6 +11,13 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('api')->group(function() {
+
+    Route::get('/token/init','EbayAuthController@step1');
+
+        Route::get('/token/step2','EbayAuthController@step2');
+
+    Route::get('/token/step3','EbayAuthController@step3')->name('reply.token');
+
+    Route::get('/token/refresh/{refresh}','EbayAuthController@refreshToken');
 });

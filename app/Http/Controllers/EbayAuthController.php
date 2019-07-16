@@ -5,69 +5,28 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Ebay\Auth\Authorization;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 
 class EbayAuthController extends Controller
 {
-    # returnToken & saveAppToken is for actually getting a valid token from ebay.
-    # You don't have to manually use this routes & controller functions.
-    public function getAuth(Authorization $authorization)
+    public function step1()
     {
-        $authorization();
-
-        return redirect()->route('ebay.home')->header('Cache-Control', 'no-store, no-cache, must-revalidate');
+        return redirect()->away( config('ebay.branded_signin') );
     }
 
-    public function saveAppToken(Request $request,Authorization $ebyAuth)
+    public function step2(Request $request)
     {
-        $ebyAuth->saveAppAccessToken($request->all());
+        Cache::put('appAccessToken', $request->all(), $request->input('expires_in'));
 
-        return redirect()->route('ebay.auth.return.token')->header('Cache-Control', 'no-store, no-cache, must-revalidate');;
+        return redirect()->route('reply.token')->header('Cache-Control', 'no-store, no-cache, must-revalidate');
     }
 
-    public function returnToken(Authorization $ebyAuth)
+    public function step3(Authorization $auth)
     {
-        $ebyAuth->getAppAccessToken();
-
-        return redirect()->route('ebay.home')->header('Cache-Control', 'no-store, no-cache, must-revalidate');
+        return $auth->generateUserAccessToken();
     }
 
-    public function storeSummary()
+    public function refreshToken($refresh, Authorization $auth)
     {
-        if(Authorization::AppTokenExists())
-        {
-            # make an array of useful information then store it in cache, This one has serialization issue
-            $store = Cache::rememberForever('storeSummary', function () {
-
-                $response = app('Ebay\Trading')->GetStore();
-                $sellerDashboard = app('Ebay\Trading')->GetSellerDashboard()->toArray();
-
-                return array(
-                    'name' => $response->Store->Name,
-                    'url' => $response->Store->URL,
-                    'subscriptionLevel' => $response->Store->SubscriptionLevel,
-                    'sellerAccount' => $sellerDashboard['SellerAccount']['Status'],
-                    'sellerFeeDiscount' => $sellerDashboard['SellerFeeDiscount']['Percent'],
-                    'powerSellerStatus' => $sellerDashboard['PowerSellerStatus']['Level'],
-                );
-            });
-        }
-        else {
-            $store = null;
-        }
-        
-        return json_encode($store);
-        // return view('ebay.home',compact('store'));
-    }
-
-    public function disconnect()
-    {
-        Storage::delete([
-            Authorization::TOKEN_DIR.Authorization::USER_TOKEN_FILE,
-            Authorization::TOKEN_DIR.Authorization::APP_TOKEN_FILE
-        ]);
-        Cache::forget('storeSummary');
-
-        return redirect()->back();
+        return $auth->tokenFromRefreshToken($refresh);
     }
 }
