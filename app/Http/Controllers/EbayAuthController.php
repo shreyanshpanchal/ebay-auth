@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Cache;
 
 class EbayAuthController extends Controller
 {
-    public function step1()
+    public function step1(Request $request)
     {
+        return $request->getHttpHost();
         return redirect()->away( config('ebay.branded_signin') );
     }
 
