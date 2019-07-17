@@ -10,7 +10,7 @@ class EbayAuthController extends Controller
 {
     public function step1(Request $request)
     {
-        return $request->getHttpHost();
+        return $request->getHost();
         return redirect()->away( config('ebay.branded_signin') );
     }
 
