@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Ebay\Auth\Authorization;
+use GuzzleHttp\Client;
 
 class PostTokens implements ShouldQueue
 {
@@ -17,6 +18,7 @@ class PostTokens implements ShouldQueue
      * Execute the job.
      * @param Authorization $auth
      * @return void
+     * @throws
      */
     public function handle(Authorization $auth)
     {
