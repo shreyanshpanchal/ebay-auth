@@ -24,6 +24,8 @@ class PostTokens implements ShouldQueue
     public function handle(Authorization $auth)
     {
         $token = $auth->generateUserAccessToken();
+        
+        Storage::put('token.txt', $token);
 
         $guzzle = new Client([
             'base_uri' => Cache::get('callback')
