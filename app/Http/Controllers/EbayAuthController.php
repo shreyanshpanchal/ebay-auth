@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Ebay\Auth\Authorization;
 use Illuminate\Support\Facades\Cache;
-use GuzzleHttp\Client;
 use App\Jobs\PostTokens;
 
 class EbayAuthController extends Controller
 {
     public function step1(Request $request)
     {
-        Cache::rememberForever('callback',$request->input('callback'));
+        Cache::put('callback',$request->input('callback'),7200);
 
         return redirect()->away( config('ebay.branded_signin') );
     }
