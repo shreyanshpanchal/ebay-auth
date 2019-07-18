@@ -13,7 +13,7 @@
 
 Route::middleware('api')->group(function() {
 
-    Route::get('/token/init','EbayAuthController@step1');
+    Route::post('/token/init','EbayAuthController@step1');
 
         Route::get('/token/step2','EbayAuthController@step2');
 
