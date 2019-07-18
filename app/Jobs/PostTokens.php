@@ -32,7 +32,11 @@ class PostTokens implements ShouldQueue
             'base_uri' => Cache::get('callback')
         ]);
 
-        $guzzle->request('POST','',['payload' => $token]);
+        $guzzle->request('POST','',array(
+            'form_params' => [
+                'payload' => $token
+            ]
+        ));
 
         return response('success',200);
     }
