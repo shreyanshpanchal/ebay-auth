@@ -27,6 +27,8 @@ class EbayAuthController extends Controller
 
     public function refreshToken($refresh, Authorization $auth)
     {
-        return $auth->tokenFromRefreshToken($refresh);
+        return $auth->tokenFromRefreshToken(
+            urldecode($refresh)
+        );
     }
 }
