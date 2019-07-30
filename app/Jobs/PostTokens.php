@@ -23,7 +23,7 @@ class PostTokens implements ShouldQueue
      */
     public function handle(Authorization $auth)
     {
-        $token = Cache::remember('token', 7200, function(){
+        $token = Cache::remember('token', 7200, function()use($auth){
             return $auth->generateUserAccessToken();
         });
         
