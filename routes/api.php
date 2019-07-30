@@ -20,4 +20,7 @@ Route::middleware('api')->group(function() {
     Route::get('/token/step3','EbayAuthController@step3')->name('reply.token');
 
     Route::get('/token/refresh/{refresh}','EbayAuthController@refreshToken');
+
+    # For local application to fetch tokens
+    Route::get('/token/fetch','EbayAuthController@fetch');
 });

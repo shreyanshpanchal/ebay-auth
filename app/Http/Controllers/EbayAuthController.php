@@ -16,6 +16,13 @@ class EbayAuthController extends Controller
         return redirect()->away( config('ebay.branded_signin') );
     }
 
+    public function fetch(Authorization $auth)
+    {
+        $token = $auth->generateUserAccessToken();
+
+        return urlencode($token);
+    }
+
     public function step2(Request $request)
     {
         Cache::put('appAccessToken', $request->all(), $request->input('expires_in'));
