@@ -16,11 +16,9 @@ class EbayAuthController extends Controller
         return redirect()->away( config('ebay.branded_signin') );
     }
 
-    public function fetch(Authorization $auth)
+    public function fetch()
     {
-        $token = $auth->generateUserAccessToken();
-
-        return urlencode($token);
+        return Cache::get('token');
     }
 
     public function step2(Request $request)
