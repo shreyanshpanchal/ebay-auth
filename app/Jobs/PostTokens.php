@@ -26,16 +26,20 @@ class PostTokens implements ShouldQueue
         $token = Cache::remember('token', 7200, function()use($auth){
             return $auth->generateUserAccessToken();
         });
-        
+
         $guzzle = new Client([
             'base_uri' => Cache::get('callback')
         ]);
 
-        $guzzle->request('POST','',array(
-            'form_params' => [
-                'payload' => $token
-            ]
-        ));
+        try {
+            $guzzle->request('POST', '', array(
+                'form_params' => [
+                    'payload' => $token
+                ]
+            ));
+        } catch (\Exception $e) {
+            echo "Please go to your application & click on fetch tokens.";
+        }
 
         return response('success',200);
     }
