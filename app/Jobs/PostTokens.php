@@ -38,7 +38,7 @@ class PostTokens implements ShouldQueue
                 ]
             ));
         } catch (\Exception $e) {
-            echo "Please go to your application & click on fetch tokens.";
+            echo "Please go to your application & click on fetch tokens." . "<br>";
         }
 
         return response('success',200);
